@@ -15,8 +15,10 @@ function S = FEM(Se,Ne)
     [S.F,~] = Augment(S.Fe,Ne,Se.nodes_e);
     S.Accel = S.M\S.F;
     S.A = -S.M\S.K;
-%     S.Accel = pinv(S.M)*S.F;
-%     S.A = -pinv(S.M)*S.K;
+
+    %Calc system matrix with total state vector (x x-dot) for analysis purposes
+    S.A_totsys = [zeros(size(S.A)) eye(size(S.A));
+                             S.A zeros(size(S.A))];
     
     %Define cell matrix that has xy coords of nodes of each element
     S.nodes_xy = cell(size(S.nodes));

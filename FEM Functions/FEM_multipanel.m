@@ -60,4 +60,16 @@ function S = FEM_multipanel(S,nx,ny)
     S.A_multipanel_totsys = [zeros(size(S.A_multipanel)) eye(size(S.A_multipanel));
                              S.A_multipanel zeros(size(S.A_multipanel))];
 
+    %get natural freq (imaginary part of eigenvalue of total system matrix)
+    temp = eig(S.A_multipanel_totsys);
+    S.multi_freq = [];
+    k = 1;
+    for i = length(temp):-1:1
+        if imag(temp(i)) > 0
+            S.multi_freq(k) = imag(temp(i));
+            k = k + 1;
+        end
+    end
+    S.multi_freq = sort(S.multi_freq,'ascend');
+
 end

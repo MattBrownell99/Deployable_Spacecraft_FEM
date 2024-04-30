@@ -19,14 +19,14 @@ function S = FEM_BCs(S,BC_type)
     
     %get natural freq (imaginary part of eigenvalue of total system matrix)
     temp = eig(S.A_bc_totsys);
-    S.freq = [];
+    S.single_freq = [];
     k = 1;
     for i = length(temp):-1:1
         if imag(temp(i)) > 0
-            S.freq(k) = imag(temp(i));
+            S.single_freq(k) = imag(temp(i));
             k = k + 1;
         end
     end
-    S.freq = sort(S.freq,'ascend');
+    S.single_freq = sort(S.single_freq,'ascend');
     
 end

@@ -19,10 +19,13 @@ function S = FEM_multipanel(S,nx,ny)
             k = k+1;
         end
     end
-    
+
     %Use new total nodes to obtain the interconnected nodes' indices
+    %'_vert' and '_horiz' are middle of side of panel on all four sides,
+    %and '_diag' is the corners of adjacent panels
     inter_nodes_vert = [];
     inter_nodes_horiz = [];
+    inter_nodes_diag = [];
     for i = 1:nx
         for j = ny:-1:1
             if j ~= 1
@@ -30,10 +33,18 @@ function S = FEM_multipanel(S,nx,ny)
             end
             if i ~= nx
                 inter_nodes_horiz =  [inter_nodes_horiz; [S.nodes_multipanel{j,i}(ceil(end/2),end) S.nodes_multipanel{j,i+1}(ceil(end/2),1)]];
+                if j == ny && length(S.nodes_BC) > 4
+                    inter_nodes_diag =  [inter_nodes_diag; [S.nodes_multipanel{j,i}(1,end) S.nodes_multipanel{j-1,i+1}(end,1)]];
+                elseif j == 1 && length(S.nodes_BC) > 4
+                    inter_nodes_diag =  [inter_nodes_diag; [S.nodes_multipanel{j,i}(end,end) S.nodes_multipanel{j+1,i+1}(1,1)]];
+                elseif j ~= ny && j ~= 1 && length(S.nodes_BC) > 4
+                    inter_nodes_diag =  [inter_nodes_diag; [S.nodes_multipanel{j,i}(1,end) S.nodes_multipanel{j-1,i+1}(end,1)]];
+                    inter_nodes_diag =  [inter_nodes_diag; [S.nodes_multipanel{j,i}(end,end) S.nodes_multipanel{j+1,i+1}(1,1)]];
+                end
             end
         end
     end
-    S.inter_nodes = [inter_nodes_vert;inter_nodes_horiz];
+    S.inter_nodes = [inter_nodes_vert;inter_nodes_horiz;inter_nodes_diag];
     
     %Add '-T/L' at each interconnected nodes' entry in the stiffness matrix
     for i = 1:size(S.inter_nodes,1)

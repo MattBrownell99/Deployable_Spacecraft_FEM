@@ -12,7 +12,7 @@ addpath(pwd + "\Local Coords Functions")
 Constants;
 
 %Define number of elements in x/y direction
-Ne = 6;
+Ne = 2;
 a_e = a/Ne;   %width of element
 b_e = b/Ne;   %height of element
 
@@ -28,10 +28,9 @@ S = FEM(Se,Ne);
 % BC_type = "Pinned";
 % S.nodes_BC = [S.nodes(1, :) S.nodes(end, :) S.nodes(2:(end-1), 1)'  S.nodes(2:(end-1), end)'];
 S.BC_type = 'Tension';
-S.nodes_BC = [S.nodes(ceil(end/2),1), S.nodes(ceil(end/2),end), S.nodes(1,ceil(end/2)), S.nodes(end,ceil(end/2))];
-% S.nodes_BC = [S.nodes(ceil(end/2),1), S.nodes(ceil(end/2),end), S.nodes(1,ceil(end/2)), S.nodes(end,ceil(end/2)),...
-%               S.nodes(1,1), S.nodes(end,1), S.nodes(1,end),
-%               S.nodes(end,end)];    %For having corner tension members too
+%S.nodes_BC = [S.nodes(ceil(end/2),1), S.nodes(ceil(end/2),end), S.nodes(1,ceil(end/2)), S.nodes(end,ceil(end/2))];
+S.nodes_BC = [S.nodes(ceil(end/2),1), S.nodes(ceil(end/2),end), S.nodes(1,ceil(end/2)), S.nodes(end,ceil(end/2)),...
+              S.nodes(1,1), S.nodes(end,1), S.nodes(1,end), S.nodes(end,end)];    %For having corner tension members too
 
 S = FEM_BCs(S,S.BC_type);
 
